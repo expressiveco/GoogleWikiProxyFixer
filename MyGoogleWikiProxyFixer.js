@@ -50,10 +50,17 @@ function $getResultLink($resultCon) {
   return $resultCon.find('> .r a');
 }
 function isGoogleResultPage()
-  {
-    // #top_nav is the top navigation bar(All, Images,...) and rendered on result page even when there are no results.
-    return getElem('#top_nav') != null;
+{
+  // #top_nav is the top navigation bar(All, Images,...) and rendered on result page even when there are no results.
+  return getElem('#top_nav') != null;
+}
+
+function loadjQuery(fnCallback)
+{
+  if (typeof window.jQuery == 'undefined') {
+    getScript('https://code.jquery.com/jquery-3.2.1.min.js', fnCallback);
   }
+}
 function loadMyGoogleHelper(init) {
   if (!isGoogleResultPage())
     return;
@@ -61,7 +68,7 @@ function loadMyGoogleHelper(init) {
   if (isGoolgeHelperLoaded())
     return;
 
-  getScript('https://code.jquery.com/jquery-3.2.1.min.js', init);
+  loadjQuery(init);
 }
 
 loadMyGoogleHelper(init);
@@ -70,16 +77,30 @@ function init()
 {
   updateLinks();
 }
-function updateLink(link)
+function updateUrl(url)
+{
+  return url.replace('.wikipedia.org', '.0wikipedia.org');
+}
+function updateLinkData(link)
+{
+  var $link = $(link), url = $link.data('href');
+  if (url)
+  {
+    url = updateUrl(url);
+    $link.data('href', url);
+  }
+}
+function updateLinkHref(link)
 {
   var url = link.hostname;
-  url.replace('.wikipedia.org', '.0wikipedia.org');
+  url = updateUrl(url);
   link.hostname = url;
 }
 function updateLinks()
 {
   var $links = $getResultLink($getAllResultContainers());
   $links.each(function(){
-    updateLink(this);
+    updateLinkData(this);
+    updateLinkHref(this);
   })
 }
