@@ -79,22 +79,23 @@ function init()
 }
 function updateUrl(url)
 {
-  return url.replace('.wikipedia.org', '.0wikipedia.org');
+  var searchStr = '.wikipedia.org', replaceStr = '.0wikipedia.org';
+  if (url.indexOf(searchStr) != -1)
+    return url.replace(searchStr, replaceStr);
 }
 function updateLinkData(link)
 {
   var $link = $(link), url = $link.data('href');
-  if (url)
-  {
-    url = updateUrl(url);
+  if (!url)
+    return;
+  if (url = updateUrl(url))
     $link.data('href', url);
-  }
 }
 function updateLinkHref(link)
 {
   var url = link.hostname;
-  url = updateUrl(url);
-  link.hostname = url;
+  if (url = updateUrl(url))
+    link.hostname = url;
 }
 function updateLinks()
 {
