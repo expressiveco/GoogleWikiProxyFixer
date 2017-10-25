@@ -1,3 +1,15 @@
+function getScript(src, callback) {
+  var s = document.createElement('script');
+  s.src = src;
+  s.async = true;
+  s.onreadystatechange = s.onload = function() {
+    if (!callback.done && (!s.readyState || /loaded|complete/.test(s.readyState))) {
+      callback.done = true;
+      callback();
+    }
+  };
+  document.querySelector('head').appendChild(s);
+}
 function memoize(func) {
   var memo = {};
   var slice = Array.prototype.slice;
